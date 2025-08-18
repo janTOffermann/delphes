@@ -43,6 +43,7 @@
 #include "TLorentzVector.h"
 #include "TMath.h"
 #include "TObjArray.h"
+#include "TObjString.h"
 #include "TROOT.h"
 #include "TRandom3.h"
 #include "TString.h"
@@ -106,6 +107,14 @@ void Delphes::SetTreeWriter(ExRootTreeWriter *treeWriter)
 
 //------------------------------------------------------------------------------
 
+void Delphes::SetDefaultRngSeed(Int_t seed)
+{
+  fDefaultSeed = seed;
+}
+
+//------------------------------------------------------------------------------
+
+
 void Delphes::Init()
 {
   stringstream message;
@@ -121,11 +130,12 @@ void Delphes::Init()
   ExRootConfParam param = confReader->GetParam("::ExecutionPath");
   Long_t i, size = param.GetSize();
 
-  gRandom->SetSeed(confReader->GetInt("::RandomSeed", 0));
+  gRandom->SetSeed(confReader->GetInt("::RandomSeed", fDefaultSeed));
 
   for(i = 0; i < size; ++i)
   {
     name = param[i].GetString();
+
     itModules = modules->find(name);
     if(itModules != modules->end())
     {
